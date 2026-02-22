@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" id="main-html" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMCA | Smart Kerala Healthcare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #020617; --text: #f8fafc; --glass-bg: rgba(15, 23, 42, 0.8); --glass-border: rgba(255, 255, 255, 0.1); }
+        .light { --bg: #f8fafc; --text: #020617; --glass-bg: rgba(255, 255, 255, 0.8); --glass-border: rgba(0, 0, 0, 0.1); }
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; transition: background 0.4s ease, color 0.4s ease; }
+        .glass { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); }
+        .feature-card { opacity: 0; transform: translateY(30px); animation: fadeInStep 0.8s ease forwards; transition: all 0.4s ease; }
+        .feature-card:hover { transform: translateY(-10px); border-color: #2563eb; box-shadow: 0 20px 40px -20px rgba(37, 99, 235, 0.5); }
+        @keyframes fadeInStep { to { opacity: 1; transform: translateY(0); } }
+        .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; } .delay-6 { animation-delay: 0.6s; }
+        
+        /* AI Box Styles */
+        .ai-glass-box { background: var(--glass-bg); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(110%); visibility: hidden; }
+        .ai-glass-box.active { transform: translateY(0); visibility: visible; }
+
+        .tab-active { background: #2563eb !important; color: white !important; }
+        input, select { background: white !important; color: #020617 !important; font-weight: 700 !important; border: 2px solid #2563eb !important; padding: 12px; border-radius: 14px; width: 100%; margin-bottom: 12px; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="sticky top-0 z-50 glass px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="location.reload()">
+            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black">G</div>
+            <span class="font-black text-xl tracking-tighter uppercase">GMCA</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleTheme()" class="p-2 bg-slate-800 dark:bg-slate-200 rounded-lg text-lg border border-slate-700/50" id="theme-icon">🌙</button>
+            <button onclick="toggleLang()" id="lang-btn" class="px-4 py-2 bg-slate-800 text-[10px] text-white font-bold rounded-lg border border-slate-700">മലയാളം</button>
+            <div id="nav-user-area" class="hidden flex items-center gap-2">
+                <span id="nav-user-name" class="text-[9px] font-black text-blue-400 bg-blue-900/40 px-3 py-1 rounded-full uppercase">User</span>
+                <button onclick="location.reload()" class="p-2 bg-red-900/20 text-red-500 rounded-lg text-[8px] font-black border border-red-500/20">EXIT</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-10 max-w-6xl pb-32">
+        <section id="view-home" class="view">
+            <div class="text-center mb-16 py-10 feature-card">
+                <h1 id="hero-title" class="text-5xl md:text-7xl font-black leading-tight tracking-tighter">Smart Healthcare for <br><span class="text-blue-600">A Better Tomorrow</span></h1>
+                <p id="hero-sub" class="mt-4 opacity-60 font-medium">Digitalizing Medical College services for Kerala.</p>
+                <div class="mt-10 flex flex-col md:flex-row justify-center gap-4">
+                    <button onclick="showView('login-box')" id="btn-login" class="px-12 py-5 bg-blue-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl">Login</button>
+                    <button onclick="showView('signup-box')" id="btn-signup" class="px-12 py-5 bg-slate-800 text-white rounded-2xl font-black uppercase text-xs tracking-widest border border-slate-700">Signup</button>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6" id="features-grid">
+                <div class="glass p-8 rounded-[2.5rem] feature-card delay-1"><div>🛡️</div><h4 class="font-bold mb-2 f-t">Secure Data</h4><p class="text-xs opacity-60 f-d">Encrypted with Govt Security.</p></div>
+                <div class="glass p-8 rounded-[2.5rem] feature-card delay-2"><div>📱</div><h4 class="font-bold mb-2 f-t">SMS Alerts</h4><p class="text-xs opacity-60 f-d">Queue status on your phone.</p></div>
+                <div class="glass p-8 rounded-[2.5rem] feature-card delay-3"><div>⭐️</div><h4 class="font-bold mb-2 f-t">Ratings</h4><p class="text-xs opacity-60 f-d">Verified doctor feedback.</p></div>
+                <div class="glass p-8 rounded-[2.5rem] feature-card delay-4"><div>🕒</div><h4 class="font-bold mb-2 f-t">Live Wait</h4><p class="text-xs opacity-60 f-d">AI wait-time predictions.</p></div>
+                <div class="glass p-8 rounded-[2.5rem] feature-card delay-5"><div>❤️</div><h4 class="font-bold mb-2 f-t">Priority</h4><p class="text-xs opacity-60 f-d">Reserved for seniors 70+.</p></div>
+                <div class="glass p-8 rounded-[2.5rem] feature-card delay-6"><div>🤖</div><h4 class="font-bold mb-2 f-t">AI Help</h4><p class="text-xs opacity-60 f-d">Instant health guidance.</p></div>
+            </div>
+        </section>
+
+        <section id="view-login-box" class="view hidden max-w-md mx-auto">
+            <div class="glass rounded-[3rem] p-10">
+                <h2 class="text-2xl font-black mb-6 uppercase text-blue-500">Quick Login</h2>
+                <input type="text" id="l-name" placeholder="Patient Name">
+                <input type="tel" id="l-phone" placeholder="Phone Number">
+                <input type="text" placeholder="Enter OTP (1234)">
+                <button onclick="finalizeUser('login')" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black uppercase">Continue</button>
+            </div>
+        </section>
+
+        <section id="view-signup-box" class="view hidden max-w-md mx-auto">
+            <div class="glass rounded-[3rem] p-10">
+                <h2 class="text-2xl font-black mb-6 uppercase text-blue-500">New Registration</h2>
+                <input type="text" id="s-name" placeholder="Full Name">
+                <input type="number" id="s-age" placeholder="Age">
+                <input type="tel" id="s-phone" placeholder="Phone Number">
+                <input type="text" placeholder="12-Digit Aadhaar Number">
+                <input type="text" placeholder="Set OTP">
+                <button onclick="finalizeUser('signup')" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black uppercase">Continue</button>
+            </div>
+        </section>
+
+        <section id="view-dash" class="view hidden">
+            <div class="glass rounded-[3rem] p-8 mb-8 relative">
+                <div id="snr-badge" class="hidden absolute top-0 right-10 bg-amber-500 text-black px-4 py-1 font-black text-[9px] uppercase rounded-b-lg">Senior Priority Active</div>
+                <h2 class="text-3xl font-black mb-6">Welcome, <span id="dash-user" class="text-blue-500">User</span></h2>
+                <div class="flex flex-wrap gap-2 bg-slate-900 p-2 rounded-2xl border border-white/5">
+                    <button onclick="switchTab('book')" id="t-book" class="flex-1 px-4 py-3 rounded-xl text-[9px] font-black uppercase text-white">New Booking</button>
+                    <button onclick="switchTab('active')" id="t-active" class="flex-1 px-4 py-3 rounded-xl text-[9px] font-black uppercase text-white">Active</button>
+                    <button onclick="switchTab('history')" id="t-history" class="flex-1 px-4 py-3 rounded-xl text-[9px] font-black uppercase text-white">History</button>
+                    <button onclick="switchTab('presc')" id="t-presc" class="flex-1 px-4 py-3 rounded-xl text-[9px] font-black uppercase text-white">Records</button>
+                </div>
+            </div>
+            <div id="dash-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+    </main>
+
+    <div id="ai-trigger" class="hidden fixed bottom-6 right-6 z-[200]">
+        <button onclick="toggleAI()" class="bg-blue-600 text-white px-6 py-4 rounded-2xl font-black shadow-2xl">🤖 MediBuddy AI</button>
+    </div>
+    <div id="ai-chat-box" class="fixed bottom-0 left-0 right-0 md:left-auto md:right-6 md:bottom-24 md:w-96 h-[60vh] ai-glass-box z-[250] md:rounded-[2.5rem] flex flex-col overflow-hidden shadow-2xl">
+        <div class="p-6 bg-blue-600 flex justify-between items-center font-black text-xs uppercase text-white"><span>MediBuddy Assistant</span><button onclick="toggleAI()">✕</button></div>
+        <div id="ai-msgs" class="flex-1 p-6 space-y-4 overflow-y-auto text-[10px]"></div>
+        <div class="p-4 bg-slate-900/10 flex gap-2"><input type="text" id="ai-in" placeholder="Ask about symptoms..." class="!mb-0"><button onclick="chatAI()" class="bg-blue-600 px-4 rounded-xl text-white font-bold">➔</button></div>
+    </div>
+
+    <div id="download-area" style="position:fixed; top:-2000px; left:0; width:450px; padding:40px; background:#fff; color:#000; font-family:sans-serif;"></div>
+
+    <script>
+        let userName = ""; let activeBookings = []; let history = []; let isMl = false;
+        
+        function toggleTheme() {
+            const html = document.getElementById('main-html');
+            const icon = document.getElementById('theme-icon');
+            if(html.classList.contains('dark')) {
+                html.classList.replace('dark', 'light');
+                icon.innerText = "☀️";
+            } else {
+                html.classList.replace('light', 'dark');
+                icon.innerText = "🌙";
+            }
+        }
+
+        // AI Logic
+        function toggleAI() { document.getElementById('ai-chat-box').classList.toggle('active'); }
+        function chatAI() {
+            const i = document.getElementById('ai-in'); const b = document.getElementById('ai-msgs'); if(!i.value) return;
+            b.innerHTML += `<div class="bg-blue-600/10 p-3 rounded-2xl ml-8 text-right border border-blue-600/20">You: ${i.value}</div>`;
+            setTimeout(() => { 
+                b.innerHTML += `<div class="bg-blue-600 text-white p-3 rounded-2xl mr-8">MediBuddy: Based on your symptoms, I suggest consulting a General Physician.</div>`; 
+                b.scrollTop = b.scrollHeight; 
+            }, 600); 
+            i.value = "";
+        }
+
+        const docs = [
+            { n: "Dr. Rajesh Kumar", d: "Cardiology", h: "GMC Thiruvananthapuram" },
+            { n: "Dr. Vinitha Nair", d: "Neurology", h: "GMC Thiruvananthapuram" },
+            { n: "Dr. Manoj P.", d: "Orthopedics", h: "GMC Thiruvananthapuram" },
+            { n: "Dr. Lakshmi S.", d: "Pediatrics", h: "GMC Thiruvananthapuram" },
+            { n: "Dr. Faisal Ahmed", d: "Oncology", h: "Aster MIMS Calicut" },
+            { n: "Dr. Deepa George", d: "Gastroenterology", h: "Aster MIMS Calicut" },
+            { n: "Dr. Arjun Das", d: "General Medicine", h: "Aster MIMS Calicut" },
+            { n: "Dr. Meera K.", d: "Dermatology", h: "Aster MIMS Calicut" }
+        ];
+
+        const demoRecords = [
+            { id: "RX-9012", date: "12/01/2026", doc: "Dr. Rajesh Kumar", diag: "Mild Hypertension" },
+            { id: "RX-8845", date: "05/11/2025", doc: "Dr. Deepa George", diag: "Acid Reflux" },
+            { id: "RX-7721", date: "20/08/2025", doc: "Dr. Arjun Das", diag: "Common Flu" },
+            { id: "RX-6500", date: "15/05/2025", doc: "Dr. Vinitha Nair", diag: "Migraine Protocol" },
+            { id: "RX-5429", date: "02/02/2025", doc: "Dr. Manoj P.", diag: "Ankle Sprain Recovery" }
+        ];
+
+        function toggleLang() {
+            isMl = !isMl;
+            document.getElementById('lang-btn').innerText = isMl ? "English" : "മലയാളം";
+            document.getElementById('hero-title').innerHTML = isMl ? "മികച്ച നാളെയ്ക്കായി <br><span class='text-blue-600'>സ്മാർട്ട് ഹെൽത്ത് കെയർ</span>" : "Smart Healthcare for <br><span class='text-blue-600'>A Better Tomorrow</span>";
+            document.getElementById('hero-sub').innerText = isMl ? "കേരളത്തിലെ മെഡിക്കൽ കോളേജ് സേവനങ്ങൾ ഡിജിറ്റലൈസ് ചെയ്യുന്നു." : "Digitalizing Medical College services for Kerala.";
+            document.getElementById('btn-login').innerText = isMl ? "ലോഗിൻ" : "Login";
+            document.getElementById('btn-signup').innerText = isMl ? "സൈൻ അപ്പ്" : "Signup";
+            const titles = isMl ? ["സുരക്ഷിത ഡാറ്റ", "SMS അലേർട്ടുകൾ", "റേറ്റിംഗുകൾ", "തത്സമയ കാത്തിരിപ്പ്", "മുൻഗണന", "AI സഹായം"] : ["Secure Data", "SMS Alerts", "Ratings", "Live Wait", "Priority", "AI Help"];
+            document.querySelectorAll('.f-t').forEach((el, i) => el.innerText = titles[i]);
+        }
+
+        function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.add('hidden')); document.getElementById('view-' + id).classList.remove('hidden'); }
+
+        function finalizeUser(type) {
+            userName = type === 'login' ? document.getElementById('l-name').value : document.getElementById('s-name').value;
+            const age = type === 'signup' ? parseInt(document.getElementById('s-age').value) : 0;
+            if(!userName) return alert("Enter Name");
+            document.getElementById('dash-user').innerText = userName;
+            document.getElementById('nav-user-area').classList.remove('hidden');
+            document.getElementById('ai-trigger').classList.remove('hidden');
+            if (age >= 70) document.getElementById('snr-badge').classList.remove('hidden');
+            showView('dash'); switchTab('book');
+        }
+
+        function switchTab(tab) {
+            const grid = document.getElementById('dash-grid');
+            document.querySelectorAll('#view-dash button').forEach(b => b.classList.remove('tab-active'));
+            document.getElementById('t-' + tab).classList.add('tab-active');
+
+            if(tab === 'book') {
+                grid.innerHTML = docs.map((d, i) => `
+                    <div class="glass p-6 rounded-[2.5rem]">
+                        <span class="text-[7px] bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded font-bold uppercase">${d.h}</span>
+                        <h3 class="font-black text-sm mt-2">${d.n}</h3>
+                        <p class="text-[9px] font-black opacity-50 uppercase mb-4">${d.d}</p>
+                        <input type="date" id="date-${i}">
+                        <select id="time-${i}"><option value="">Select Time</option><option>10:00 AM</option><option>02:30 PM</option></select>
+                        <button onclick="confirmBooking(${i})" class="w-full mt-2 py-3 bg-blue-600 text-white rounded-xl font-black text-[9px] uppercase">Book Now</button>
+                    </div>
+                `).join('');
+            } else if(tab === 'active') {
+                grid.innerHTML = activeBookings.length ? activeBookings.map((b, i) => `
+                    <div class="glass p-6 rounded-[2.5rem] border-blue-500/30">
+                        <span class="text-[8px] font-black text-blue-400 uppercase">${b.date} • ${b.time}</span>
+                        <h4 class="font-black text-sm mt-1">${b.doc}</h4>
+                        <div class="flex flex-col gap-2 mt-4">
+                            <button onclick="startMeet(${i})" class="w-full py-3 bg-green-600 text-white rounded-xl text-[9px] font-black uppercase">📹 Start New Call</button>
+                            <button onclick="downloadDoc('TICKET', '${b.doc}', '${b.date}')" class="w-full py-3 bg-blue-900/40 text-blue-400 border border-blue-500/20 rounded-xl text-[9px] font-black uppercase">📥 Download Ticket</button>
+                            <button onclick="cancelBooking(${i})" class="w-full py-3 bg-red-900/40 text-red-500 border border-red-500/20 rounded-xl text-[9px] font-black uppercase">Cancel Ticket</button>
+                        </div>
+                    </div>
+                `).join('') : `<div class="col-span-full py-20 text-center opacity-30 font-black uppercase">No Active Tickets</div>`;
+            } else if(tab === 'history') {
+                grid.innerHTML = history.length ? history.map(h => `
+                    <div class="glass p-6 rounded-[2.5rem] ${h.status === 'Cancelled' ? 'opacity-50' : 'border-green-500/20'}">
+                        <span class="text-[8px] font-black uppercase">${h.date} - ${h.status}</span>
+                        <h4 class="font-black text-sm mt-1">${h.doc}</h4>
+                    </div>
+                `).join('') : `<div class="col-span-full py-20 text-center opacity-30 font-black uppercase">No History</div>`;
+            } else {
+                grid.innerHTML = demoRecords.map(r => `
+                    <div class="glass p-6 rounded-[2.5rem] border-blue-500/10">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[9px] font-black text-blue-400 uppercase">${r.id}</span>
+                            <span class="text-[8px] opacity-50">${r.date}</span>
+                        </div>
+                        <h4 class="font-black text-sm">${r.doc}</h4>
+                        <p class="text-[9px] opacity-60 mt-1 uppercase">Diagnosis: ${r.diag}</p>
+                        <button onclick="downloadDoc('PRESCRIPTION', '${r.doc}', '${r.date}', '${r.id}')" class="mt-4 text-[7px] font-black uppercase text-blue-500 tracking-widest">Download Prescription ➔</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function confirmBooking(idx) {
+            const date = document.getElementById('date-' + idx).value; const time = document.getElementById('time-' + idx).value;
+            if(!date || !time) return alert("Select Date & Time");
+            activeBookings.push({ doc: docs[idx].n, date, time }); switchTab('active');
+        }
+
+        function startMeet(index) {
+            const b = activeBookings[index]; b.status = "Joined (Online)";
+            history.push(b); activeBookings.splice(index, 1);
+            window.open("https://meet.google.com/new", "_blank"); switchTab('history');
+        }
+
+        function cancelBooking(index) {
+            const b = activeBookings[index]; b.status = "Cancelled";
+            history.push(b); activeBookings.splice(index, 1); switchTab('history');
+        }
+
+        function downloadDoc(type, doc, date, id = "TKT-001") {
+            const area = document.getElementById('download-area');
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=GMCA-${id}-${userName}`;
+            area.innerHTML = `
+                <div style="border: 8px solid #2563eb; padding: 30px; position:relative; background:white; color:black;">
+                    <h1 style="margin:0; font-size:28px; color:#2563eb;">GMCA KERALA</h1>
+                    <p style="margin:0; font-size:12px; font-weight:bold;">OFFICIAL MEDICAL DOCUMENT</p>
+                    <hr style="margin:20px 0; border:1px solid #eee;">
+                    <h3 style="text-transform:uppercase;">${type} SUMMARY</h3>
+                    <p style="font-size:16px;"><b>Patient Name:</b> ${userName}</p>
+                    <p style="font-size:16px;"><b>Consultant:</b> ${doc}</p>
+                    <p style="font-size:16px;"><b>Date:</b> ${date}</p>
+                    <p style="font-size:16px;"><b>Doc ID:</b> ${id}</p>
+                    <div style="margin-top:30px; text-align:center;">
+                        <img src="${qrUrl}" style="width:120px; height:120px; border:1px solid #ccc; padding:5px;">
+                        <p style="font-size:10px; margin-top:5px;">Scan to Verify Authenticity</p>
+                    </div>
+                </div>
+            `;
+            setTimeout(() => {
+                html2canvas(area, {useCORS: true}).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `${type}_${userName}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                });
+            }, 500);
+        }
+    </script>
+</body>
+</html>
