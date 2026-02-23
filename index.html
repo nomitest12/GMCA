@@ -97,6 +97,25 @@
                     <button onclick="switchTab('history')" id="t-history" class="flex-1 px-4 py-3 rounded-xl text-[9px] font-black uppercase text-white">History</button>
                     <button onclick="switchTab('presc')" id="t-presc" class="flex-1 px-4 py-3 rounded-xl text-[9px] font-black uppercase text-white">Records</button>
                 </div>
+                
+                <div id="sort-controls" class="mt-6 pt-6 border-t border-white/10 flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <label class="text-[8px] font-black uppercase opacity-50 ml-2">Filter Hospital</label>
+                        <select id="filter-hosp" onchange="switchTab('book')" class="!mb-0 !py-2 !text-[10px]">
+                            <option value="all">All Available Hospitals</option>
+                            <option value="GMC Thiruvananthapuram">GMC Thiruvananthapuram</option>
+                            <option value="Aster MIMS Calicut">Aster MIMS Calicut</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-[8px] font-black uppercase opacity-50 ml-2">Sort By</label>
+                        <select id="sort-type" onchange="switchTab('book')" class="!mb-0 !py-2 !text-[10px]">
+                            <option value="default">Availability (Default)</option>
+                            <option value="tokens">Lowest Token Count</option>
+                            <option value="name">Doctor Name (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div id="dash-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
@@ -141,14 +160,14 @@
         }
 
         const docs = [
-            { n: "Dr. Rajesh Kumar", d: "Cardiology", h: "GMC Thiruvananthapuram" },
-            { n: "Dr. Vinitha Nair", d: "Neurology", h: "GMC Thiruvananthapuram" },
-            { n: "Dr. Manoj P.", d: "Orthopedics", h: "GMC Thiruvananthapuram" },
-            { n: "Dr. Lakshmi S.", d: "Pediatrics", h: "GMC Thiruvananthapuram" },
-            { n: "Dr. Faisal Ahmed", d: "Oncology", h: "Aster MIMS Calicut" },
-            { n: "Dr. Deepa George", d: "Gastroenterology", h: "Aster MIMS Calicut" },
-            { n: "Dr. Arjun Das", d: "General Medicine", h: "Aster MIMS Calicut" },
-            { n: "Dr. Meera K.", d: "Dermatology", h: "Aster MIMS Calicut" }
+            { n: "Dr. Rajesh Kumar", d: "Cardiology", h: "GMC Thiruvananthapuram", t: 12 },
+            { n: "Dr. Vinitha Nair", d: "Neurology", h: "GMC Thiruvananthapuram", t: 5 },
+            { n: "Dr. Manoj P.", d: "Orthopedics", h: "GMC Thiruvananthapuram", t: 22 },
+            { n: "Dr. Lakshmi S.", d: "Pediatrics", h: "GMC Thiruvananthapuram", t: 8 },
+            { n: "Dr. Faisal Ahmed", d: "Oncology", h: "Aster MIMS Calicut", t: 15 },
+            { n: "Dr. Deepa George", d: "Gastroenterology", h: "Aster MIMS Calicut", t: 3 },
+            { n: "Dr. Arjun Das", d: "General Medicine", h: "Aster MIMS Calicut", t: 30 },
+            { n: "Dr. Meera K.", d: "Dermatology", h: "Aster MIMS Calicut", t: 11 }
         ];
 
         const demoRecords = [
@@ -187,16 +206,30 @@
             const grid = document.getElementById('dash-grid');
             document.querySelectorAll('#view-dash button').forEach(b => b.classList.remove('tab-active'));
             document.getElementById('t-' + tab).classList.add('tab-active');
+            
+            const sortControls = document.getElementById('sort-controls');
+            tab === 'book' ? sortControls.classList.remove('hidden') : sortControls.classList.add('hidden');
 
             if(tab === 'book') {
-                grid.innerHTML = docs.map((d, i) => `
+                let filtered = [...docs];
+                const hospFilter = document.getElementById('filter-hosp').value;
+                const sortVal = document.getElementById('sort-type').value;
+
+                if(hospFilter !== 'all') filtered = filtered.filter(d => d.h === hospFilter);
+                if(sortVal === 'tokens') filtered.sort((a,b) => a.t - b.t);
+                if(sortVal === 'name') filtered.sort((a,b) => a.n.localeCompare(b.n));
+
+                grid.innerHTML = filtered.map((d, i) => `
                     <div class="glass p-6 rounded-[2.5rem]">
-                        <span class="text-[7px] bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded font-bold uppercase">${d.h}</span>
+                        <div class="flex justify-between items-start">
+                             <span class="text-[7px] bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded font-bold uppercase">${d.h}</span>
+                             <span class="text-[8px] font-black text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded">🎫 Tokens: ${d.t}</span>
+                        </div>
                         <h3 class="font-black text-sm mt-2">${d.n}</h3>
                         <p class="text-[9px] font-black opacity-50 uppercase mb-4">${d.d}</p>
                         <input type="date" id="date-${i}">
                         <select id="time-${i}"><option value="">Select Time</option><option>10:00 AM</option><option>02:30 PM</option></select>
-                        <button onclick="confirmBooking(${i})" class="w-full mt-2 py-3 bg-blue-600 text-white rounded-xl font-black text-[9px] uppercase">Book Now</button>
+                        <button onclick="confirmBookingFromSort('${d.n}')" class="w-full mt-2 py-3 bg-blue-600 text-white rounded-xl font-black text-[9px] uppercase">Book Now</button>
                     </div>
                 `).join('');
             } else if(tab === 'active') {
@@ -231,6 +264,13 @@
                     </div>
                 `).join('');
             }
+        }
+
+        // Adapted booking logic for dynamic lists
+        function confirmBookingFromSort(docName) {
+            activeBookings.push({ doc: docName, date: "2026-02-25", time: "10:00 AM" }); 
+            alert("Booking Confirmed for " + docName);
+            switchTab('active');
         }
 
         function confirmBooking(idx) {
